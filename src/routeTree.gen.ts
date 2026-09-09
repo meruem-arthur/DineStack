@@ -29,10 +29,10 @@ import { Route as ApiPaystackWebhookRouteImport } from './routes/api/paystack/we
 import { Route as SuperAdminAuthedIndexRouteImport } from './routes/super-admin/_authed/index'
 import { Route as SuperAdminAuthedActivityRouteImport } from './routes/super-admin/_authed/activity'
 import { Route as SuperAdminAuthedAdminsRouteImport } from './routes/super-admin/_authed/admins'
-import { Route as SuperAdminAuthedRestaurantsRouteImport } from './routes/super-admin/_authed/restaurants'
 import { Route as SuperAdminAuthedSettingsRouteImport } from './routes/super-admin/_authed/settings'
 import { Route as AdminAuthedOrdersIndexRouteImport } from './routes/admin/_authed/orders.index'
 import { Route as AdminAuthedOrdersIdRouteImport } from './routes/admin/_authed/orders.$id'
+import { Route as SuperAdminAuthedRestaurantsIndexRouteImport } from './routes/super-admin/_authed/restaurants.index'
 import { Route as SuperAdminAuthedRestaurantsIdRouteImport } from './routes/super-admin/_authed/restaurants.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -136,12 +136,6 @@ const SuperAdminAuthedAdminsRoute = SuperAdminAuthedAdminsRouteImport.update({
   path: '/admins',
   getParentRoute: () => SuperAdminAuthedRoute,
 } as any)
-const SuperAdminAuthedRestaurantsRoute =
-  SuperAdminAuthedRestaurantsRouteImport.update({
-    id: '/restaurants',
-    path: '/restaurants',
-    getParentRoute: () => SuperAdminAuthedRoute,
-  } as any)
 const SuperAdminAuthedSettingsRoute =
   SuperAdminAuthedSettingsRouteImport.update({
     id: '/settings',
@@ -158,11 +152,17 @@ const AdminAuthedOrdersIdRoute = AdminAuthedOrdersIdRouteImport.update({
   path: '/orders/$id',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const SuperAdminAuthedRestaurantsIndexRoute =
+  SuperAdminAuthedRestaurantsIndexRouteImport.update({
+    id: '/restaurants/',
+    path: '/restaurants/',
+    getParentRoute: () => SuperAdminAuthedRoute,
+  } as any)
 const SuperAdminAuthedRestaurantsIdRoute =
   SuperAdminAuthedRestaurantsIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => SuperAdminAuthedRestaurantsRoute,
+    id: '/restaurants/$id',
+    path: '/restaurants/$id',
+    getParentRoute: () => SuperAdminAuthedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -184,13 +184,13 @@ export interface FileRoutesByFullPath {
   '/api/paystack/webhook': typeof ApiPaystackWebhookRoute
   '/super-admin/activity': typeof SuperAdminAuthedActivityRoute
   '/super-admin/admins': typeof SuperAdminAuthedAdminsRoute
-  '/super-admin/restaurants': typeof SuperAdminAuthedRestaurantsRouteWithChildren
   '/super-admin/settings': typeof SuperAdminAuthedSettingsRoute
   '/admin/': typeof AdminAuthedIndexRoute
   '/super-admin/': typeof SuperAdminAuthedIndexRoute
   '/admin/orders/$id': typeof AdminAuthedOrdersIdRoute
   '/super-admin/restaurants/$id': typeof SuperAdminAuthedRestaurantsIdRoute
   '/admin/orders/': typeof AdminAuthedOrdersIndexRoute
+  '/super-admin/restaurants/': typeof SuperAdminAuthedRestaurantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -209,13 +209,13 @@ export interface FileRoutesByTo {
   '/api/paystack/webhook': typeof ApiPaystackWebhookRoute
   '/super-admin/activity': typeof SuperAdminAuthedActivityRoute
   '/super-admin/admins': typeof SuperAdminAuthedAdminsRoute
-  '/super-admin/restaurants': typeof SuperAdminAuthedRestaurantsRouteWithChildren
   '/super-admin/settings': typeof SuperAdminAuthedSettingsRoute
   '/admin': typeof AdminAuthedIndexRoute
   '/super-admin': typeof SuperAdminAuthedIndexRoute
   '/admin/orders/$id': typeof AdminAuthedOrdersIdRoute
   '/super-admin/restaurants/$id': typeof SuperAdminAuthedRestaurantsIdRoute
   '/admin/orders': typeof AdminAuthedOrdersIndexRoute
+  '/super-admin/restaurants': typeof SuperAdminAuthedRestaurantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -237,13 +237,13 @@ export interface FileRoutesById {
   '/api/paystack/webhook': typeof ApiPaystackWebhookRoute
   '/super-admin/_authed/activity': typeof SuperAdminAuthedActivityRoute
   '/super-admin/_authed/admins': typeof SuperAdminAuthedAdminsRoute
-  '/super-admin/_authed/restaurants': typeof SuperAdminAuthedRestaurantsRouteWithChildren
   '/super-admin/_authed/settings': typeof SuperAdminAuthedSettingsRoute
   '/admin/_authed/': typeof AdminAuthedIndexRoute
   '/super-admin/_authed/': typeof SuperAdminAuthedIndexRoute
   '/admin/_authed/orders/$id': typeof AdminAuthedOrdersIdRoute
   '/super-admin/_authed/restaurants/$id': typeof SuperAdminAuthedRestaurantsIdRoute
   '/admin/_authed/orders/': typeof AdminAuthedOrdersIndexRoute
+  '/super-admin/_authed/restaurants/': typeof SuperAdminAuthedRestaurantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -266,13 +266,13 @@ export interface FileRouteTypes {
     | '/api/paystack/webhook'
     | '/super-admin/activity'
     | '/super-admin/admins'
-    | '/super-admin/restaurants'
     | '/super-admin/settings'
     | '/admin/'
     | '/super-admin/'
     | '/admin/orders/$id'
     | '/super-admin/restaurants/$id'
     | '/admin/orders/'
+    | '/super-admin/restaurants/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -291,13 +291,13 @@ export interface FileRouteTypes {
     | '/api/paystack/webhook'
     | '/super-admin/activity'
     | '/super-admin/admins'
-    | '/super-admin/restaurants'
     | '/super-admin/settings'
     | '/admin'
     | '/super-admin'
     | '/admin/orders/$id'
     | '/super-admin/restaurants/$id'
     | '/admin/orders'
+    | '/super-admin/restaurants'
   id:
     | '__root__'
     | '/'
@@ -318,13 +318,13 @@ export interface FileRouteTypes {
     | '/api/paystack/webhook'
     | '/super-admin/_authed/activity'
     | '/super-admin/_authed/admins'
-    | '/super-admin/_authed/restaurants'
     | '/super-admin/_authed/settings'
     | '/admin/_authed/'
     | '/super-admin/_authed/'
     | '/admin/_authed/orders/$id'
     | '/super-admin/_authed/restaurants/$id'
     | '/admin/_authed/orders/'
+    | '/super-admin/_authed/restaurants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -481,13 +481,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminAuthedAdminsRouteImport
       parentRoute: typeof SuperAdminAuthedRoute
     }
-    '/super-admin/_authed/restaurants': {
-      id: '/super-admin/_authed/restaurants'
-      path: '/restaurants'
-      fullPath: '/super-admin/restaurants'
-      preLoaderRoute: typeof SuperAdminAuthedRestaurantsRouteImport
-      parentRoute: typeof SuperAdminAuthedRoute
-    }
     '/super-admin/_authed/settings': {
       id: '/super-admin/_authed/settings'
       path: '/settings'
@@ -509,12 +502,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedOrdersIdRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/super-admin/_authed/restaurants/': {
+      id: '/super-admin/_authed/restaurants/'
+      path: '/restaurants'
+      fullPath: '/super-admin/restaurants/'
+      preLoaderRoute: typeof SuperAdminAuthedRestaurantsIndexRouteImport
+      parentRoute: typeof SuperAdminAuthedRoute
+    }
     '/super-admin/_authed/restaurants/$id': {
       id: '/super-admin/_authed/restaurants/$id'
-      path: '/$id'
+      path: '/restaurants/$id'
       fullPath: '/super-admin/restaurants/$id'
       preLoaderRoute: typeof SuperAdminAuthedRestaurantsIdRouteImport
-      parentRoute: typeof SuperAdminAuthedRestaurantsRoute
+      parentRoute: typeof SuperAdminAuthedRoute
     }
   }
 }
@@ -549,35 +549,22 @@ const AdminAuthedRouteWithChildren = AdminAuthedRoute._addFileChildren(
   AdminAuthedRouteChildren,
 )
 
-interface SuperAdminAuthedRestaurantsRouteChildren {
-  SuperAdminAuthedRestaurantsIdRoute: typeof SuperAdminAuthedRestaurantsIdRoute
-}
-
-const SuperAdminAuthedRestaurantsRouteChildren: SuperAdminAuthedRestaurantsRouteChildren =
-  {
-    SuperAdminAuthedRestaurantsIdRoute: SuperAdminAuthedRestaurantsIdRoute,
-  }
-
-const SuperAdminAuthedRestaurantsRouteWithChildren =
-  SuperAdminAuthedRestaurantsRoute._addFileChildren(
-    SuperAdminAuthedRestaurantsRouteChildren,
-  )
-
 interface SuperAdminAuthedRouteChildren {
   SuperAdminAuthedActivityRoute: typeof SuperAdminAuthedActivityRoute
   SuperAdminAuthedAdminsRoute: typeof SuperAdminAuthedAdminsRoute
-  SuperAdminAuthedRestaurantsRoute: typeof SuperAdminAuthedRestaurantsRouteWithChildren
   SuperAdminAuthedSettingsRoute: typeof SuperAdminAuthedSettingsRoute
   SuperAdminAuthedIndexRoute: typeof SuperAdminAuthedIndexRoute
+  SuperAdminAuthedRestaurantsIdRoute: typeof SuperAdminAuthedRestaurantsIdRoute
+  SuperAdminAuthedRestaurantsIndexRoute: typeof SuperAdminAuthedRestaurantsIndexRoute
 }
 
 const SuperAdminAuthedRouteChildren: SuperAdminAuthedRouteChildren = {
   SuperAdminAuthedActivityRoute: SuperAdminAuthedActivityRoute,
   SuperAdminAuthedAdminsRoute: SuperAdminAuthedAdminsRoute,
-  SuperAdminAuthedRestaurantsRoute:
-    SuperAdminAuthedRestaurantsRouteWithChildren,
   SuperAdminAuthedSettingsRoute: SuperAdminAuthedSettingsRoute,
   SuperAdminAuthedIndexRoute: SuperAdminAuthedIndexRoute,
+  SuperAdminAuthedRestaurantsIdRoute: SuperAdminAuthedRestaurantsIdRoute,
+  SuperAdminAuthedRestaurantsIndexRoute: SuperAdminAuthedRestaurantsIndexRoute,
 }
 
 const SuperAdminAuthedRouteWithChildren =

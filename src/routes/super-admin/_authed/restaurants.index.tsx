@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { listRestaurants, createRestaurant } from "@/functions/restaurants";
 
-export const Route = createFileRoute("/super-admin/_authed/restaurants")({
+export const Route = createFileRoute("/super-admin/_authed/restaurants/")({
   head: () => ({
     meta: [{ title: "Restaurants — Super Admin" }, { name: "robots", content: "noindex" }],
   }),

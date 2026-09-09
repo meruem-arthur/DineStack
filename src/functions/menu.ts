@@ -218,14 +218,32 @@ export const deleteMenuItem = createServerFn({ method: "POST" })
   });
 
 /** Full menu list (including unavailable items) for the Admin's own restaurant. */
-export const listMenuForAdmin = createServerFn({ method: "GET" }).handler(async () => {
-  const account = await requireTenantStaff({ role: MENU_MANAGER_ROLES });
-  return db.query.categories.findMany({
-    where: eq(categories.restaurantId, account.restaurantId),
-    orderBy: asc(categories.sortOrder),
-    with: { items: { orderBy: asc(menuItems.sortOrder) } },
-  });
-});
+export const listMenuForAdmin = createServerFn({ method: "GET" }).handler(
+  async (): Promise<PublicCategory[]> => {
+    const account = await requireTenantStaff({ role: MENU_MANAGER_ROLES });
+    const cats = await db.query.categories.findMany({
+      where: eq(categories.restaurantId, account.restaurantId),
+      orderBy: asc(categories.sortOrder),
+      with: { items: { orderBy: asc(menuItems.sortOrder) } },
+    });
+
+    return cats.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      title: c.title,
+      blurb: c.blurb,
+      layout: c.layout,
+      items: c.items.map((i) => ({
+        id: i.id,
+        name: i.name,
+        description: i.description,
+        price: Number(i.price),
+        imageUrl: i.imageUrl,
+        available: i.available,
+      })),
+    }));
+  },
+);
 
 // ─────────────────────────────────────────────────────────────
 // Category management (Admin only, scoped to their own restaurant)

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMenu, saveMenuItem, setItemAvailability } from "@/functions/menu";
+import { listMenuForAdmin, saveMenuItem, setItemAvailability } from "@/functions/menu";
 import { isCloudinaryConfigured, uploadImageToCloudinary } from "@/lib/cloudinary";
 
 export function MenuManager() {
   const queryClient = useQueryClient();
-  const menuQuery = useQuery({ queryKey: ["admin-menu"], queryFn: () => getMenu() });
+  const menuQuery = useQuery({ queryKey: ["admin-menu"], queryFn: () => listMenuForAdmin() });
   const [uploadingId, setUploadingId] = React.useState<number | null>(null);
   const [uploadErrors, setUploadErrors] = React.useState<Record<number, string>>({});
 
@@ -64,8 +64,16 @@ export function MenuManager() {
     }
   }
 
-  if (menuQuery.isLoading || !menuQuery.data) {
+  if (menuQuery.isLoading) {
     return <p className="text-sm text-ink/40">Loading…</p>;
+  }
+
+  if (menuQuery.isError || !menuQuery.data) {
+    return (
+      <p className="text-sm text-red-600">
+        Couldn't load the menu. Please refresh the page or try again shortly.
+      </p>
+    );
   }
 
   return (

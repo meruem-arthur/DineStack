@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import heroSpread from "@/assets/hero-spread.jpg";
 import logoIcon from "@/assets/logo-icon.png";
 import { getMenu, type PublicCategory, type PublicMenuItem } from "@/functions/menu";
@@ -15,11 +15,22 @@ export const Route = createFileRoute("/")({
   // restaurant and sets the dynamic <title>/description/OG tags/
   // favicon from it. Duplicating a hard-coded title here would only
   // risk shadowing that with stale/wrong-restaurant metadata.
-  loader: async () => ({
-    restaurant: await getPublicRestaurantInfo(),
-    menu: await getMenu(),
-    promotions: await getActivePromotions(),
-  }),
+  loader: async () => {
+    try {
+      const [restaurant, menu, promotions] = await Promise.all([
+        getPublicRestaurantInfo(),
+        getMenu(),
+        getActivePromotions(),
+      ]);
+      return { restaurant, menu, promotions };
+    } catch {
+      // No restaurant is mapped to this host — e.g. the platform's own
+      // *.vercel.app domain before a custom domain is attached to a
+      // tenant. There's no storefront to render, so send the visitor
+      // straight to the admin login instead of a broken/blank page.
+      throw redirect({ to: "/admin/login" });
+    }
+  },
   component: Index,
 });
 
@@ -411,7 +422,7 @@ function Index() {
               )}
 
               {cat.layout === "grid" && (
-                <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
                   {cat.items.map((item) => (
                     <div
                       key={item.id}

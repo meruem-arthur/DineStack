@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportRuntimeError } from "../lib/error-reporting";
 import { CartProvider } from "../lib/cart-context";
+import { Toaster } from "@/components/ui/sonner";
 import { getTenantFromRequest, type TenantBundle } from "../lib/tenant";
 import { brandingToCssVariables } from "../lib/theme";
 
@@ -183,6 +184,11 @@ function RootComponent() {
       <CartProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        <Toaster
+          position="top-center"
+          richColors
+          toastOptions={{ style: { fontFamily: "var(--font-body)" } }}
+        />
       </CartProvider>
     </QueryClientProvider>
   );

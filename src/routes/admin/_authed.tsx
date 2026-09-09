@@ -1,12 +1,17 @@
+import { createFileRoute, Outlet, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import {
-  createFileRoute,
-  Outlet,
-  redirect,
-  Link,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
+  LayoutGrid,
+  ClipboardList,
+  BarChart3,
+  UtensilsCrossed,
+  BadgePercent,
+  MapPin,
+  Clock,
+  Users,
+  UserCircle,
+} from "lucide-react";
 import { getCurrentStaff, logoutStaff } from "@/functions/auth";
+import { DashboardShell, type DashboardNavItem } from "@/components/dashboard-shell";
 
 export const Route = createFileRoute("/admin/_authed")({
   beforeLoad: async () => {
@@ -32,63 +37,34 @@ function AuthedAdminLayout() {
     await navigate({ to: "/admin/login" });
   }
 
+  const navItems: DashboardNavItem[] = [
+    { to: "/admin", label: "Dashboard", icon: LayoutGrid, exact: true },
+    { to: "/admin/orders", label: "Orders", icon: ClipboardList },
+    ...(isAdmin
+      ? [
+          { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+          { to: "/admin/menu", label: "Menu", icon: UtensilsCrossed },
+          { to: "/admin/promotions", label: "Promotions", icon: BadgePercent },
+          { to: "/admin/delivery", label: "Delivery", icon: MapPin },
+          { to: "/admin/hours", label: "Hours", icon: Clock },
+          { to: "/admin/staff", label: "Staff", icon: Users },
+        ]
+      : []),
+    { to: "/admin/account", label: "My Account", icon: UserCircle },
+  ];
+
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur-sm">
-        <Link to="/admin" className="flex shrink-0 items-center gap-2">
-          <div className="grid size-8 place-items-center rounded-[8px] bg-clay text-paper">
-            <span className="text-sm font-semibold leading-none">F</span>
-          </div>
-          <span className="hidden text-sm font-semibold sm:inline">
-            {isAdmin ? "Admin Dashboard" : "Staff Dashboard"}
-          </span>
-        </Link>
-        <nav className="flex flex-1 items-center gap-3 overflow-x-auto text-xs font-medium text-ink/60">
-          <Link to="/admin" activeProps={{ className: "text-clay" }}>
-            Dashboard
-          </Link>
-          <Link to="/admin/orders" activeProps={{ className: "text-clay" }}>
-            Orders
-          </Link>
-          {isAdmin && (
-            <>
-              <Link to="/admin/analytics" activeProps={{ className: "text-clay" }}>
-                Analytics
-              </Link>
-              <Link to="/admin/menu" activeProps={{ className: "text-clay" }}>
-                Menu
-              </Link>
-              <Link to="/admin/promotions" activeProps={{ className: "text-clay" }}>
-                Promotions
-              </Link>
-              <Link to="/admin/delivery" activeProps={{ className: "text-clay" }}>
-                Delivery
-              </Link>
-              <Link to="/admin/hours" activeProps={{ className: "text-clay" }}>
-                Hours
-              </Link>
-              <Link to="/admin/staff" activeProps={{ className: "text-clay" }}>
-                Staff
-              </Link>
-            </>
-          )}
-          <Link to="/admin/account" activeProps={{ className: "text-clay" }}>
-            My Account
-          </Link>
-        </nav>
-        <div className="flex shrink-0 items-center gap-3">
-          <span className="hidden text-xs text-ink/50 sm:inline">{staff.name}</span>
-          <button
-            onClick={handleLogout}
-            className="btn-glass-light rounded-full px-3 py-1.5 text-xs font-medium text-clay"
-          >
-            Log out
-          </button>
-        </div>
-      </header>
-      <main className="px-4 py-5">
-        <Outlet />
-      </main>
-    </div>
+    <DashboardShell
+      brandLabel="Restaurant Admin"
+      brandMark="A"
+      brandMarkClassName="bg-clay text-paper"
+      subtitle={isAdmin ? "Admin Dashboard" : "Staff Dashboard"}
+      homeTo="/admin"
+      navItems={navItems}
+      staffName={staff.name}
+      onLogout={handleLogout}
+    >
+      <Outlet />
+    </DashboardShell>
   );
 }

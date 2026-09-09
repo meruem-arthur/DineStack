@@ -1,6 +1,8 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { requestPasswordReset } from "@/functions/auth";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/admin/forgot-password")({
   head: () => ({
@@ -22,6 +24,7 @@ function ForgotPasswordPage() {
     try {
       await requestPasswordReset({ data: { email } });
       setSubmitted(true);
+      toast.success("Reset link sent — check your email");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -62,8 +65,9 @@ function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-glass w-full rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
+              className="btn-glass inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
             >
+              {submitting && <Spinner />}
               {submitting ? "Sending…" : "Send reset link"}
             </button>
           </form>

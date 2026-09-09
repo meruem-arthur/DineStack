@@ -1,7 +1,9 @@
 import * as React from "react";
 import { createFileRoute, useNavigate, redirect, Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { loginStaff, getCurrentStaff } from "@/functions/auth";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
@@ -27,6 +29,7 @@ function LoginPage() {
     setError(null);
     try {
       const account = await loginStaff({ data: { identifier, password } });
+      toast.success("Login successful");
       await navigate({ to: account.role === "super_admin" ? "/super-admin" : "/admin" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
@@ -68,8 +71,9 @@ function LoginPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="btn-glass w-full rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
+          className="btn-glass inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
         >
+          {submitting && <Spinner />}
           {submitting ? "Signing in…" : "Sign in"}
         </button>
 

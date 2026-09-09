@@ -1,7 +1,9 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { resetPasswordWithToken } from "@/functions/auth";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/admin/reset-password/$token")({
   head: () => ({
@@ -30,6 +32,7 @@ function ResetPasswordPage() {
     try {
       await resetPasswordWithToken({ data: { token, newPassword: password } });
       setDone(true);
+      toast.success("Password updated");
       setTimeout(() => navigate({ to: "/admin/login" }), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -76,8 +79,9 @@ function ResetPasswordPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-glass w-full rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
+              className="btn-glass inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-5 py-3 text-sm font-medium text-paper disabled:opacity-60"
             >
+              {submitting && <Spinner />}
               {submitting ? "Saving…" : "Set new password"}
             </button>
           </form>

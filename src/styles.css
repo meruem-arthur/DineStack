@@ -1,0 +1,233 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Multi-tenant storefront design system. Colors/fonts below are the
+ * DEFAULT theme (also FOCUS Street Kitchen's own branding, tenant #1) —
+ * every restaurant's actual values come from restaurant_branding via
+ * the CSS variables injected per-request in src/routes/__root.tsx
+ * (see src/lib/theme.ts). These are just the fallbacks.
+ * Editorial bento, clay & paper palette.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* Brand palette */
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-clay: var(--clay);
+  --color-amber: var(--amber);
+  --color-sage: var(--sage);
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Space Grotesk", sans-serif;
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Brand palette (oklch) */
+  --ink: oklch(0.133 0.084 62.7);
+  --paper: oklch(0.946 0.076 90.1);
+  --card: oklch(0.977 0.043 90.5);
+  --clay: oklch(0.444 0.6 47.4);
+  --amber: oklch(0.632 0.567 69.8);
+  --sage: oklch(0.483 0.172 118.1);
+
+  /* Semantic tokens mapped to brand palette */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card-foreground: var(--ink);
+  --popover: var(--card);
+  --popover-foreground: var(--ink);
+  --primary: var(--clay);
+  --primary-foreground: var(--paper);
+  --secondary: oklch(0.916 0.045 85);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.906 0.04 85);
+  --muted-foreground: oklch(0.48 0.03 70);
+  --accent: oklch(0.795 0.06 80);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: var(--paper);
+  --border: oklch(0.133 0.084 62.7 / 0.08);
+  --input: oklch(0.133 0.084 62.7 / 0.1);
+  --ring: var(--clay);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    /* A handful of pages use slightly-oversized blurred background
+       images (see PageBackground-style treatments) — keep those from
+       ever introducing a horizontal scrollbar on narrow screens. */
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* iOS Safari auto-zooms the page when a focused input's font-size is
+     under 16px. Most of our inputs use text-xs/text-sm (12–14px) for
+     visual consistency, so bump the effective size back up to 16px
+     only on small screens, where the zoom is disruptive. */
+  @media (max-width: 640px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
+}
+
+/*
+ * Glassy / glossy button treatment — used across the admin & staff
+ * dashboards (login, staff management, order actions, etc). Layers a
+ * soft gradient sheen + inner highlight + backdrop blur over a
+ * translucent tint of the button's own background color, so it reads
+ * as frosted glass rather than a flat fill.
+ */
+.btn-glass {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklch, white 22%, transparent),
+    color-mix(in oklch, white 0%, transparent) 55%
+  );
+  box-shadow:
+    0 1px 0 0 color-mix(in oklch, white 35%, transparent) inset,
+    0 -1px 0 0 color-mix(in oklch, black 12%, transparent) inset,
+    0 8px 20px -8px color-mix(in oklch, var(--ink) 35%, transparent);
+  border: 1px solid color-mix(in oklch, white 25%, transparent);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+.btn-glass:hover {
+  filter: brightness(1.06);
+}
+.btn-glass:active {
+  transform: translateY(1px) scale(0.99);
+}
+.btn-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    color-mix(in oklch, white 35%, transparent) 45%,
+    transparent 60%
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+.btn-glass:disabled {
+  filter: grayscale(0.2);
+}
+
+/* Lighter variant for buttons sitting on a translucent/light card, e.g.
+   secondary or outline-style actions in the admin UI. */
+.btn-glass-light {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: color-mix(in oklch, white 55%, transparent);
+  box-shadow:
+    0 1px 0 0 color-mix(in oklch, white 60%, transparent) inset,
+    0 4px 14px -8px color-mix(in oklch, var(--ink) 25%, transparent);
+  border: 1px solid color-mix(in oklch, white 40%, transparent);
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+.btn-glass-light:hover {
+  filter: brightness(1.03);
+}
+.btn-glass-light:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+@keyframes steam {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(-46px);
+    opacity: 0;
+  }
+}
+.steam {
+  animation: steam 4.5s ease-in-out infinite;
+}
+.steam-2 {
+  animation-delay: 1.4s;
+}
+.steam-3 {
+  animation-delay: 2.6s;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
